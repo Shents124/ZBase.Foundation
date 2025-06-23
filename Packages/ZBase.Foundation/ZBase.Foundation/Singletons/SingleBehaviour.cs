@@ -38,6 +38,11 @@ namespace ZBase.Foundation.Singletons
 
         public static T Of<T>(Lifetime lifetime = Lifetime.EveryScenes) where T : MonoBehaviour
             => Single<T>.GetInstance(lifetime);
+			
+		public static bool TryGet<T>(out T instance) where T : MonoBehaviour
+		{
+			return Single<T>.TryGet(out instance);
+		}
 
         internal static class Single<T> where T : MonoBehaviour
         {
@@ -95,6 +100,12 @@ namespace ZBase.Foundation.Singletons
 
                 return s_instance;
             }
+			
+			public static bool TryGet(out T instance)
+			{
+				instance = s_instance;
+				return instance != null;
+			}
         }
     }
 }
