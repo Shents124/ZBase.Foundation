@@ -4,21 +4,19 @@ using UnityEngine;
 
 namespace ZBase.Foundation.Singletons
 {
-    public abstract class SingleBehaviour<T> : MonoBehaviour
+    public abstract class SingleBehaviour<T> : MonoBehaviour, IResetStaticsOnDomainReload
         where T : SingleBehaviour<T>
     {
         [SerializeField]
         private SingleBehaviour.Lifetime _lifetime;
 
         private static T s_instance;
-
-        /// <seealso href="https://docs.unity3d.com/Manual/DomainReloading.html"/>
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void Init()
+        
+        public void ResetStaticsOnDomainReload()
         {
             s_instance = null;
         }
-
+        
         protected void Awake()
         {
             if (this is not T instance)
@@ -41,6 +39,10 @@ namespace ZBase.Foundation.Singletons
             }
 
             OnAwake();
+
+#if UNITY_EDITOR
+            SingletonEditorManager.Register(s_instance);
+#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

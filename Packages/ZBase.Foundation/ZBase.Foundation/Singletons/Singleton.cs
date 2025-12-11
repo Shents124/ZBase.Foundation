@@ -1,5 +1,6 @@
 ﻿using System;
-using UnityEngine;
+using System.Collections.Generic;
+using UnityEditor;
 
 namespace ZBase.Foundation.Singletons
 {
@@ -9,37 +10,47 @@ namespace ZBase.Foundation.Singletons
     /// </summary>
     public static partial class Singleton
     {
+        private readonly static Dictionary<Type, object> s_instances = new();
+    
         public static T Of<T>() where T : class, new()
-            => Single<T>.GetInstance(() => new T());
+            => GetInstance(() => new T());
 
         public static T Of<T>(Func<T> instantiator) where T : class
         {
             if (instantiator == null)
                 throw new ArgumentNullException(nameof(instantiator));
 
-            return Single<T>.GetInstance(instantiator);
+            return GetInstance(instantiator);
         }
-
-        internal static class Single<T> where T : class
+    
+        private static T GetInstance<T>(Func<T> instantiator)
         {
-            private static T s_instance;
-
-            /// <seealso href="https://docs.unity3d.com/Manual/DomainReloading.html"/>
-            [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-            static void Init()
+            var type = typeof(T);
+        
+            if (s_instances.TryGetValue(type, out var obj) == false)
             {
-                s_instance = null;
+                var result = instantiator();
+                s_instances.Add(type, result);
+                return result;
             }
-
-            public static T GetInstance(Func<T> instantiator)
+        
+            if (obj is not T instanceT)
             {
-                if (s_instance == null)
-                {
-                    s_instance = instantiator();
-                }
-
-                return s_instance;
+                instanceT = instantiator();
+                s_instances[type] = instanceT;
+            
+                UnityEngine.Debug.LogError($"Registered instance does not match type '{type}' thus is replaced.");
             }
+        
+            return instanceT;
         }
+
+#if UNITY_EDITOR
+        [InitializeOnEnterPlayMode]
+        public static void Reset()
+        {
+            s_instances.Clear();
+        }
+#endif
     }
 }
