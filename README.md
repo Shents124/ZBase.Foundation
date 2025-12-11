@@ -17,7 +17,7 @@ openupm add com.faster-games.t4
 3. Enter the following to install
 
 ```
-https://https://github.com/Shents124/ZBase.Foundation?path=/Packages/ZBase.Foundation
+https://github.com/Shents124/ZBase.Foundation?path=/Packages/ZBase.Foundation
 ```
 
 <p align="center">
