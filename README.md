@@ -6,7 +6,7 @@
 3. Enter the following to install
 
 ```
-https://github.com/Shents124/ZBase.Foundation?path=/Packages/ZBase.Foundation
+https://github.com/Shents124/ZBase.Foundation.git?path=/Packages/ZBase.Foundation
 ```
 
 <p align="center">
