@@ -224,9 +224,7 @@
       "version": "file:ZBase.Foundation",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {
-        "org.nuget.system.runtime.compilerservices.unsafe": "6.0.0"
-      }
+      "dependencies": {}
     },
     "org.nuget.system.runtime.compilerservices.unsafe": {
       "version": "6.0.0",
