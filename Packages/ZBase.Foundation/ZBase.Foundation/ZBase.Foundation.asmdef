@@ -1,9 +1,7 @@
 {
     "name": "ZBase.Foundation",
     "rootNamespace": "ZBase.Foundation",
-    "references": [
-        "ZString"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -11,12 +9,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "com.cysharp.zstring",
-            "expression": "",
-            "define": "ZBASE_FOUNDATION_ZSTRING"
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }
