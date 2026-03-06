@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 namespace ZBase.Foundation.Singletons
 {
@@ -35,6 +36,20 @@ namespace ZBase.Foundation.Singletons
             /// </remarks>
             SingleScene = 1,
         }
+        
+        private static event Action OnClearInstances;
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void Init()
+        {
+            OnClearInstances?.Invoke();
+            OnClearInstances = null;
+        }
+        
+        internal static void RegisterCleanup(Action cleanupAction)
+        {
+            OnClearInstances += cleanupAction;
+        }
 
         public static T Of<T>(Lifetime lifetime = Lifetime.EveryScenes) where T : MonoBehaviour
             => Single<T>.GetInstance(lifetime);
@@ -48,10 +63,8 @@ namespace ZBase.Foundation.Singletons
         {
             private static readonly object s_lock = new();
             private static T s_instance;
-
-            /// <seealso href="https://docs.unity3d.com/Manual/DomainReloading.html"/>
-            [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-            static void Init()
+            
+            static void CleanUp()
             {
                 s_instance = null;
             }
@@ -67,7 +80,7 @@ namespace ZBase.Foundation.Singletons
 
                 if (lifetime == Lifetime.EveryScenes)
                 {
-                    Object.DontDestroyOnLoad(instance.gameObject);
+                    UnityEngine.Object.DontDestroyOnLoad(instance.gameObject);
                 }
             }
 
@@ -77,7 +90,7 @@ namespace ZBase.Foundation.Singletons
                 {
                     lock (s_lock)
                     {
-                        s_instance = Object.FindObjectOfType<T>();
+                        s_instance = UnityEngine.Object.FindObjectOfType<T>();
 
                         if (s_instance == false)
                         {
@@ -88,13 +101,15 @@ namespace ZBase.Foundation.Singletons
 
                         if (lifetime == Lifetime.EveryScenes)
                         {
-                            Object.DontDestroyOnLoad(s_instance.gameObject);
+                            UnityEngine.Object.DontDestroyOnLoad(s_instance.gameObject);
                         }
 
                         if (autoRename)
                         {
                             s_instance.gameObject.name = $"[{nameof(Singleton)}] {typeof(T).Name}";
                         }
+                        
+                        RegisterCleanup(CleanUp);
                     }
                 }
 
