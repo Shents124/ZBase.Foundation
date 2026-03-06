@@ -1,12 +1,9 @@
 {
   "name": "com.zbase.foundation",
   "displayName": "ZBase.Foundation",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "type": "library",
   "unity": "2022.3",
-  "dependencies": {
-    "org.nuget.system.runtime.compilerservices.unsafe": "6.0.0"
-  },
   "scopedRegistries": [
     {
       "name": "package.openupm.com",
